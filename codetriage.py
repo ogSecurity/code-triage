@@ -1,7 +1,6 @@
 from github import Github, Auth
 from github.GithubException import GithubException
 
-
 import pygit2
 import os
 import argparse
@@ -11,6 +10,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 def triage(owner, output_file='triage.csv', access_token='access_token'):
+
+
     auth = Auth.Token(access_token)
     g = Github(auth=auth)
 
@@ -56,6 +57,7 @@ def triage(owner, output_file='triage.csv', access_token='access_token'):
         count += 1
     csv_file.close()
 
+
 def release_tags(repo):
     count = 0
     latest_tag = "N/A"
@@ -68,6 +70,7 @@ def release_tags(repo):
         logging.error(f"An error getting tags for {repo.name}: {e}")
         return count, latest_tag
     return count, latest_tag
+
 
 def is_repo_empty(repo):
     try:
@@ -110,17 +113,34 @@ def pull(csv_file, access_token, destination_folder):
                 branch = row['Pull Branch']
 
             # TODO if * in branch list, pull all branches
+            if '*' == row['Branch list']:
+                try:
+                    repo = pygit2.clone_repository(repo.clone_url, f"{destination_folder}/{row['Name']}")
 
-            # TODO if pull branch doesn't exist but was given check tag name and tag id and pull that if it exists
+                    # Get the remote
+                    remote = repo.remotes['origin']
 
-            # Clone repo
-            try:
-                pygit2.clone_repository(repo.clone_url, f"{destination_folder}/{row['Name']}", checkout_branch=branch)
-            except ValueError as e:
-                logging.error(f"An error occurred cloning {row['Name']}: {e}, skipping")
-                continue
+                    # Fetch all branches
+                    remote.fetch()
 
-            logging.info(f"Repo {row['Name']} pulled to {destination_folder}")
+                    # Checkout all branches
+                    for branch_name in repo.listall_references():
+                        if branch_name.startswith('refs/remotes/origin/'):
+                            branch = branch_name.replace('refs/remotes/origin/', '')
+                            if branch not in repo.branches.local:
+                                repo.create_branch(branch, repo.revparse_single(branch_name))
+                except ValueError as e:
+                    logging.error(f"An error occurred cloning {row['Name']}: {e}, skipping")
+                    continue
+            else:
+                # TODO if pull branch doesn't exist but was given check tag name and tag id and pull that if it exists
+                try:
+                    pygit2.clone_repository(repo.clone_url, f"{destination_folder}/{row['Name']}", checkout_branch=branch)
+                except ValueError as e:
+                    logging.error(f"An error occurred cloning {row['Name']}: {e}, skipping")
+                    continue
+
+                logging.info(f"Repo {row['Name']} pulled to {destination_folder}")
 
 # TODO functionality for checking the timestamp of each branches commit
 # TODO functionality for checking each branch of a fork to see the timestamp of last commit and how many commits ahead and behind of target branch
