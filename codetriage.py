@@ -36,7 +36,7 @@ def triage(owner, output_file='triage.csv', access_token='access_token'):
 
     # TODO Move Pull (Y/N) and Pull Branch after "Name"
     # TODO Add Note after main
-    csv_writer.writerow(['Name', 'Owner', 'Empty', 'Archived', 'Fork', 'Description', 'Forks', 'Open Issues', 'Last Updated', 'URL', 'Default Branch', 'Branch list', 'Release Tags', 'Latest Tag', 'Pull (Y/N)', 'Pull Branch'])
+    csv_writer.writerow(['Name', 'Owner', 'Pull (Y/N)', 'Pull Branch', 'Notes', 'Empty', 'Archived', 'Fork', 'Description', 'Forks', 'Open Issues', 'Last Updated', 'URL', 'Default Branch', 'Branch list', 'Release Tags', 'Latest Tag'])
 
     count = 1
     for repo in repos:
@@ -52,7 +52,7 @@ def triage(owner, output_file='triage.csv', access_token='access_token'):
 
         # Write repo metadata to CSV file
         logging.info(f"Writing repo metadata to CSV file: {output_file}...")
-        csv_writer.writerow([repo.name, repo.owner.login, is_repo_empty(repo), repo.archived, repo.fork, repo.description, repo.forks_count, repo.open_issues_count, repo.updated_at, repo.html_url, repo.default_branch, branch_list, tag_count, latest_tag, "", ""])
+        csv_writer.writerow([repo.name, repo.owner.login, "", "", "", is_repo_empty(repo), repo.archived, repo.fork, repo.description, repo.forks_count, repo.open_issues_count, repo.updated_at, repo.html_url, repo.default_branch, branch_list, tag_count, latest_tag])
 
         count += 1
     csv_file.close()
