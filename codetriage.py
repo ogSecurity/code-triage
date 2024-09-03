@@ -95,7 +95,7 @@ def pull(csv_file, access_token, destination_folder):
     g = Github(auth=auth)
 
     # Read CSV file
-    with open(csv_file, mode='r') as csv_file:
+    with open(csv_file, mode='rb') as csv_file:
         csv_reader = csv.DictReader(csv_file)
         rows = list(csv_reader)
 
