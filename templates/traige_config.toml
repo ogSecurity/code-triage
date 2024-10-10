@@ -1,0 +1,12 @@
+# This file is used to configure the targets of the triage tool.
+# This can be slightly easier to manage than the command line arguments but also
+# allows for more complex configurations.
+
+# The targets section is used to specify the repositories that will be triaged.
+[targets]
+[[github]]
+account = "papermerge"
+
+[[github]]
+account = "ciur"
+repositories = ["papermerge"]

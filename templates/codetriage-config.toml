@@ -1,0 +1,9 @@
+# User Defaults
+# These are the defaults that will be used if the user does not specify them
+# in their configuration file.
+[defaults]
+output_file = "codetriage.csv"
+
+# SCM Configration
+[github]
+access_token = ""
