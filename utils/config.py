@@ -3,6 +3,26 @@ import toml
 
 logging.basicConfig(level=logging.INFO)
 
+# Enum for the column names in the output CSV file
+ROW_NAME_LABEL = 'Name'
+ROW_OWNER_LABEL = 'Owner'
+ROW_PULL_LABEL = 'Pull (Y/N)'
+ROW_PULL_BRANCH_TAG_LABEL = 'Pull Branch/Tag'
+ROW_NOTES_LABEL = 'Notes'
+ROW_EMPTY_LABEL = 'Empty'
+ROW_ARCHIVED_LABEL = 'Archived'
+ROW_FORK_LABEL = 'Fork'
+ROW_DESCRIPTION_LABEL = 'Description'
+ROW_FORKS_LABEL = 'Forks'
+ROW_OPEN_ISSUES_LABEL = 'Open Issues'
+ROW_LAST_UPDATED_LABEL = 'Last Updated'
+ROW_URL_LABEL = 'URL'
+ROW_CLONE_URL_LABEL = 'Clone URL'
+ROW_DEFAULT_BRANCH_LABEL = 'Default Branch'
+ROW_BRANCH_LIST_LABEL = 'Branch List'
+ROW_RELEASE_TAGS_LABEL = 'Release Tags'
+ROW_LATEST_TAG_LABEL = 'Latest Tag'
+
 
 class CodeTriageConfiguration:
     output_file: str = None

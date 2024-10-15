@@ -80,13 +80,36 @@ The triage sheet is designed to give you an overview of a number of repositories
 
 **Note**: Do not edit the `Pull (Y/N)`, `Pull Branch/Tag`, `Default Branch` or `Clone URL` columns as they are used by the tool to determine what to pull.
 
-# Running Tests
+# Tests
 
-To run tests against the code base run the following:
+A number of test repos have been created or referenced to exercise the code base:
 
-```bash
-python -m unittest discover -s tests
-```
+**GitHub**
+
+- Empty Repo: https://github.com/NullMode/codetriage_empty (you wont see anything when you go here, that's on purpose)
+- Repo that has been forked: https://github.com/NullMode/vim
+- Archived Repo: https://github.com/NullMode/codetriage_archived
+- Forked Repo: https://github.com/NullMode/zarp 
+- Repo with issues: https://github.com/NullMode/codetriage_open_issues
+- Repo more than 1 branch: https://github.com/NullMode/codetriage_multiple_branches
+- Repo with tags: https://github.com/NullMode/codetriage_tags
+
+## Running Tests
+
+The tests in the project are current split into unit tests and integration tests. The e2e tests are designed to test the code against the GitHub API and will require an access token to run.
+
+Running unit tests:
+
+`poetry run pytest tests/unit`
+[codetriage.py](codetriage.py)
+Running ent to end tests:
+
+`poetry run pytest tests/e2e`
+
+If you want to run all tests:
+
+`poetry run pytest`
+
 
 # TODO List
 
@@ -100,4 +123,5 @@ python -m unittest discover -s tests
     - [ ] GitLab
     - [ ] BitBucket
     - [ ] Azure DevOps
+    - [ ] GitServer
 - [ ] Implement scan mode - run a set of predefined commands at the root of each repository to gather information

@@ -4,6 +4,7 @@ import os
 import argparse
 import csv
 import logging
+from utils.config import ROW_NAME_LABEL, ROW_OWNER_LABEL, ROW_PULL_LABEL, ROW_PULL_BRANCH_TAG_LABEL, ROW_NOTES_LABEL, ROW_EMPTY_LABEL, ROW_ARCHIVED_LABEL, ROW_FORK_LABEL, ROW_DESCRIPTION_LABEL, ROW_FORKS_LABEL, ROW_OPEN_ISSUES_LABEL, ROW_LAST_UPDATED_LABEL, ROW_URL_LABEL, ROW_CLONE_URL_LABEL, ROW_DEFAULT_BRANCH_LABEL, ROW_BRANCH_LIST_LABEL, ROW_RELEASE_TAGS_LABEL, ROW_LATEST_TAG_LABEL
 
 logging.basicConfig(level=logging.INFO)
 
@@ -29,7 +30,26 @@ def triage(owner, scm, output_file='triage2.csv'):
         return
 
     csv_writer = csv.writer(csv_file, dialect='excel')
-    csv_writer.writerow(['Name', 'Owner', 'Pull (Y/N)', 'Pull Branch/Tag', 'Notes', 'Empty', 'Archived', 'Fork', 'Description', 'Forks', 'Open Issues', 'Last Updated', 'URL', 'Clone URL', 'Default Branch', 'Branch List', 'Release Tags', 'Latest Tag'])
+    csv_writer.writerow([
+        ROW_NAME_LABEL,
+        ROW_OWNER_LABEL,
+        ROW_PULL_LABEL,
+        ROW_PULL_BRANCH_TAG_LABEL,
+        ROW_NOTES_LABEL,
+        ROW_EMPTY_LABEL,
+        ROW_ARCHIVED_LABEL,
+        ROW_FORK_LABEL,
+        ROW_DESCRIPTION_LABEL,
+        ROW_FORKS_LABEL,
+        ROW_OPEN_ISSUES_LABEL,
+        ROW_LAST_UPDATED_LABEL,
+        ROW_URL_LABEL,
+        ROW_CLONE_URL_LABEL,
+        ROW_DEFAULT_BRANCH_LABEL,
+        ROW_BRANCH_LIST_LABEL,
+        ROW_RELEASE_TAGS_LABEL,
+        ROW_LATEST_TAG_LABEL
+    ])
 
     # Get all repositories for the user/org
     repos = scm.get_repos(owner)
@@ -50,14 +70,14 @@ def pull(csv_file, scm, destination_folder):
     # Download repos
     for i, row in enumerate(rows):
         if row['Pull (Y/N)'].casefold() in {'y', 'yes'}:
-            logging.info(f"Pulling repo: {row['Name']}...")
+            logging.info(f"Pulling repo: {row[ROW_NAME_LABEL]}...")
 
             # Get branch to pull
-            branch = row['Default Branch']
-            if row['Pull Branch/Tag']:
-                branch = row['Pull Branch/Tag']
+            branch = row[ROW_DEFAULT_BRANCH_LABEL]
+            if row[ROW_PULL_BRANCH_TAG_LABEL]:
+                branch = row[ROW_PULL_BRANCH_TAG_LABEL]
 
-            scm.pull_repo(row['Owner'], row['Name'], row['Clone URL'], branch, destination_folder)
+            scm.pull_repo(row[ROW_OWNER_LABEL], row[ROW_NAME_LABEL], row[ROW_CLONE_URL_LABEL], branch, destination_folder)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -71,9 +91,11 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--destination', help='Destination folder for pull', default='repos')
     args = parser.parse_args()
 
+    # Setup target SCM system
+    scm_class = SCM_CLASS_MAP[args.scm]
+    scm = scm_class()
+
     if args.mode in ['triage', 'pull']:
-        scm_class = SCM_CLASS_MAP[args.scm]
-        scm = scm_class()
         scm.set_auth_configuration(args)
         scm.authenticate()
 
