@@ -52,6 +52,34 @@ Pulling the repositories marked in the triage spreadsheet `triage.csv` into a `r
 
 `poetry run python codetriage.py -m triage -a YOUR_ACCESS_TOKEN_OR_LOCATION -d repos/ -t triage.csv`
 
+# Triage Sheet
+
+The triage sheet is designed to give you an overview of a number of repositories for a given user or organisation. The sheet will contain the following columns:
+
+- `Name`: The name of the repository
+- `Owner`: The owner of the repository
+- `Pull Y/N`: A column to mark if the repository should be pulled
+- `Pull Branch/Tag`:
+  - A column to mark what branch or tag should be pulled. 
+  - If the repository is marked for pull, but this column is empty, the default branch will be pulled
+  - \* can be used to pull all branches
+- `Notes`: A column for any notes you want to make about the repository
+- `Empty`: A column to mark if the repository is empty (where it has been created but nothing has been pushed yet)
+- `Archived`: A column to mark if the repository is archived
+- `Fork`: A column to mark if the repository is a fork
+- `Description`: The description of the repository
+- `Forks`: The number of forks the repository has
+- `Open Issues`: The number of open issues the repository has (if this information is available)
+- `Last Updated`: The date the repository was last updated
+- `URL`: The URL to the repository for general browsing
+- `Clone URL`: The URL to clone the repository
+- `Default Branch`: The default branch of the repository
+- `Branch List`: A list of branches in the repository
+- `Release Tags`: The number of release tags for the repository
+- `Latest Tag`: The latest release tag for the repository
+
+**Note**: Do not edit the `Pull (Y/N)`, `Pull Branch/Tag`, `Default Branch` or `Clone URL` columns as they are used by the tool to determine what to pull.
+
 # Running Tests
 
 To run tests against the code base run the following:

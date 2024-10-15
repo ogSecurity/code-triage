@@ -31,10 +31,7 @@ def triage(owner, scm, output_file='triage2.csv'):
         return
 
     csv_writer = csv.writer(csv_file, dialect='excel')
-
-    # TODO Move Pull (Y/N) and Pull Branch after "Name"
-    # TODO Add Note after main
-    csv_writer.writerow(['Name', 'Owner', 'Pull (Y/N)', 'Pull Branch', 'Notes', 'Empty', 'Archived', 'Fork', 'Description', 'Forks', 'Open Issues', 'Last Updated', 'URL', 'Clone URL', 'Default Branch', 'Branch list', 'Release Tags', 'Latest Tag'])
+    csv_writer.writerow(['Name', 'Owner', 'Pull (Y/N)', 'Pull Branch/Tag', 'Notes', 'Empty', 'Archived', 'Fork', 'Description', 'Forks', 'Open Issues', 'Last Updated', 'URL', 'Clone URL', 'Default Branch', 'Branch List', 'Release Tags', 'Latest Tag'])
 
     # Get all repositories for the user/org
     repos = scm.get_repos(owner)
