@@ -56,13 +56,10 @@ def pull(csv_file, scm, destination_folder):
 
             # Get branch to pull
             branch = row['Default Branch']
-            if row['Pull Branch']:
-                branch = row['Pull Branch']
+            if row['Pull Branch/Tag']:
+                branch = row['Pull Branch/Tag']
 
             scm.pull_repo(row['Owner'], row['Name'], row['Clone URL'], branch, destination_folder)
-
-# TODO functionality for checking the timestamp of each branches commit
-# TODO functionality for checking each branch of a fork to see the timestamp of last commit and how many commits ahead and behind of target branch
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -4,6 +4,7 @@ from github.GithubException import GithubException
 from sys import exit
 from pygit2 import GitError
 
+import shutil
 import os
 import logging
 import pygit2
@@ -134,10 +135,29 @@ class GithubPublic(SCM):
                         logging.error(f"An error occurred cloning {repo_name}: {e}")
                         exit(1)
             else:
-                pygit2.clone_repository(clone_url, f"{destination_folder}/{repo_name}", checkout_branch=branch)
+                repo_path = os.path.join(destination_folder, repo_name)
+                try:
+                    pygit2.clone_repository(clone_url, repo_path, checkout_branch=branch)
+                except KeyError as e:
+                    if "reference 'refs/remotes/" in str(e) and "' not found" in str(e):
+                        # No branches found - treat as a tag
+                        tag_repo = pygit2.clone_repository(clone_url, repo_path)
+                        for remote in tag_repo.remotes:
+                            remote.fetch([f"refs/tags/*:refs/tags/*"])
+                        try:
+                            tag_ref = tag_repo.references.get(f'refs/tags/{branch}')
+                            tag_commit = tag_ref.peel()  # This gets the commit the tag points to
+                        except AttributeError:
+                            # Delete folder and error
+                            shutil.rmtree(repo_path)
+                            raise KeyError(f"No branch or tag '{branch}' not found for {repo_name}")
+
+                        # Checkout the tag
+                        tag_repo.checkout_tree(tag_commit)
+                        tag_repo.set_head(tag_commit.id)
         except KeyError as e:
-            if "reference 'refs/remotes/" in str(e) and "' not found" in str(e):
-                logging.error(f"No branches found for {repo_name}, skipping")
+            logging.error(f"{e} - skipping")
+            return False
         except ValueError as e:
             logging.error(f"An error occurred cloning {repo_name}: {e}, skipping")
             return False

@@ -94,7 +94,10 @@ python -m unittest discover -s tests
 - [ ] Support for multiple output formats
     - [x] CSV
     - [ ] Excel
+- [ ] Functionality for checking the timestamp of each branches commit
+- [ ] Functionality for checking each branch of a fork to see the timestamp of last commit and how many commits ahead and behind of target branch
 - Support for more SCM platforms
     - [ ] GitLab
     - [ ] BitBucket
     - [ ] Azure DevOps
+- [ ] Implement scan mode - run a set of predefined commands at the root of each repository to gather information
