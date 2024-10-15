@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "code-triage"
+version = "0.1.0"
+description = "Code Triage is a tool that can be used by security consultants and their clients to aid in the scoping process of repositories in an SCM,"
+authors = ["Luke Rogerson <nullmode@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+certifi = "2024.7.4"
+cffi = "1.16.0"
+charset-normalizer = "3.3.2"
+cryptography = "42.0.8"
+deprecated = "1.2.14"
+idna = "3.7"
+pycparser = "2.22"
+pygit2 = "1.15.1"
+pygithub = "2.3.0"
+pyjwt = "2.8.0"
+pynacl = "1.5.0"
+requests = "2.32.3"
+toml = "0.10.2"
+typing-extensions = "4.12.2"
+urllib3 = "2.2.2"
+wrapt = "1.16.0"
+
+
+[build-system]
+requires = ["poetry-core>=1.8.3"]
+build-backend = "poetry.core.masonry.api"

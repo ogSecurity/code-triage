@@ -4,9 +4,11 @@ from github.GithubException import GithubException
 from sys import exit
 from pygit2 import GitError
 
+import os
 import logging
 import pygit2
 
+logging.basicConfig(level=logging.INFO)
 
 class GithubPublic(SCM):
     def __init__(self):
@@ -107,11 +109,12 @@ class GithubPublic(SCM):
 
         return repo_list
 
-    def pull_repo(aelf, owner, repo_name, clone_url, branch, destination_folder):
+    def pull_repo(self, owner, repo_name, clone_url, branch, destination_folder):
         try:
             # Checkout all branches
             if branch == '*':
-                repo = pygit2.clone_repository(clone_url, f"{destination_folder}/{repo_name}")
+                repo_path = os.path.join(destination_folder, repo_name)
+                repo = pygit2.clone_repository(clone_url, repo_path)
                 remote = repo.remotes['origin']
                 remote.fetch()
 

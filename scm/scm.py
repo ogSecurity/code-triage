@@ -3,8 +3,9 @@ from abc import ABC, abstractmethod
 import logging
 import sys
 
+logging.basicConfig(level=logging.INFO)
 
-# Repository class to store information about a repository
+
 class Repository:
     def __init__(self, name, owner, default_branch, branch_list, is_empty, is_archived, is_fork, description, forks_count, updated_at, url, clone_url, tag_count, latest_tag, tags, open_issues_count):
         self.name = name
@@ -29,9 +30,11 @@ class Branch:
     def __init__(self, name):
         self.name = name
 
+
 class Tag:
     def __init__(self, name):
         self.name = name
+
 
 # Abstract class for source control system (SCM) interface
 class SCM(ABC):
@@ -117,6 +120,16 @@ class SCM(ABC):
             for option in options:
                 value = getattr(args, option, None)
                 if value:
+                    # If it is an access token that's been provided, check
+                    # if it is a file and read the contents, else treat it as the token
+                    if option == 'access_token':
+                        try:
+                            with open(value, 'r') as file:
+                                value = file.read().strip()
+                        except FileNotFoundError:
+                            logging.warning(f"Access token not referenced as a file - consider using a file to keep your API key out of your command history.")
+                            pass
+
                     config[option] = value
                 else:
                     all_valid = False

@@ -68,19 +68,13 @@ def pull(csv_file, scm, destination_folder):
 # TODO functionality for checking each branch of a fork to see the timestamp of last commit and how many commits ahead and behind of target branch
 
 if __name__ == '__main__':
-    # Check if running user has code triage configuration in home directory
-    if os.path.exists(CODE_TRIAGE_CONFIG):
-        config = CodeTriageConfiguration(CODE_TRIAGE_CONFIG)
-
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', '--mode', help='Mode: triage - create CSV containing repo information, pull - download all repos (use -t for triage sheet where you can specify what to pull)', choices=['triage', 'pull'], required=True)
     parser.add_argument('-u', '--user', help='User (or organisation), required for triage mode')
     parser.add_argument('-o', '--output', help='Output file', default='triage.csv')
     parser.add_argument('-t', '--triage-file', help='Triage file with repo information', default='triage.csv')
     parser.add_argument('-s', '--scm', help='Source control system - only Github is supported at this time', choices=['github'], default='github')
-    # TODO access token can be a file or the access token
-    # TODO if access token presented on the command line it could be saved in history?
-    parser.add_argument('-a', '--access-token', help='Access token')
+    parser.add_argument('-a', '--access-token', help='Access token - either as a file or the token itself')
     parser.add_argument('-p', '--prompt', help='Prompt for access tokens or credential material', action='store_true')
     parser.add_argument('-d', '--destination', help='Destination folder for pull', default='repos')
     args = parser.parse_args()
