@@ -1,10 +1,8 @@
-from scm.github_public import GithubPublic
-
 import logging
-import sys
 import toml
 
 logging.basicConfig(level=logging.INFO)
+
 
 class CodeTriageConfiguration:
     output_file: str = None

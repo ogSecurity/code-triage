@@ -1,5 +1,6 @@
 from .scm import SCM, Repository, Branch, Tag
-from github import Github, Auth
+from github import Auth
+from github import Github as gh
 from github.GithubException import GithubException
 from sys import exit
 from pygit2 import GitError
@@ -11,7 +12,7 @@ import pygit2
 
 logging.basicConfig(level=logging.INFO)
 
-class GithubPublic(SCM):
+class Github(SCM):
     def __init__(self):
         super().__init__()
         self._scm = 'github'
@@ -26,7 +27,7 @@ class GithubPublic(SCM):
             exit(1)
 
         if 'access_token' in self.auth_configuration:
-            self.client = Github(auth=Auth.Token(self.auth_configuration['access_token']))
+            self.client = gh(auth=Auth.Token(self.auth_configuration['access_token']))
 
     def get_repos(self, user):
         repos = self.client.get_user(user).get_repos()

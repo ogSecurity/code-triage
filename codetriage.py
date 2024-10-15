@@ -1,7 +1,5 @@
-from utils.config import CodeTriageConfiguration
-from scm.github_public import GithubPublic
+from scm.github import Github
 
-import pygit2
 import os
 import argparse
 import csv
@@ -11,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 
 CODE_TRIAGE_CONFIG = os.path.expanduser('~/.code-triage')
 SCM_CLASS_MAP = {
-    'github': GithubPublic
+    'github': Github
 }
 
 
