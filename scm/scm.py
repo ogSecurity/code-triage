@@ -104,6 +104,9 @@ class SCM(ABC):
     def pull_repo(self, repo):
         pass
 
+    def get_str_datetime(self, date) -> str:
+        return date.strftime("%Y-%m-%d %H:%M:%S")
+
     def validate_auth_options(self, args) -> list:
         valid_auth_options = []
         auth_options = self.authentication_options()

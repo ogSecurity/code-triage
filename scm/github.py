@@ -52,9 +52,9 @@ class Github(SCM):
                            self.is_repo_empty(repo),
                            repo.archived,
                            repo.fork,
-                           repo.description,
+                           str(repo.description),  # Description can be None, force to string
                            repo.forks_count,
-                           repo.updated_at,
+                           self.get_str_datetime(repo.updated_at),
                            repo.html_url,
                            repo.clone_url,
                            tag_count,
@@ -91,7 +91,7 @@ class Github(SCM):
 
     def get_tags_info(self, repo):
         count = 0
-        latest_tag = "N/A"
+        latest_tag = ""
         all_tags = []
         try:
             tags = repo.get_tags()

@@ -101,7 +101,7 @@ The tests in the project are current split into unit tests and integration tests
 Running unit tests:
 
 `poetry run pytest tests/unit`
-[codetriage.py](codetriage.py)
+
 Running ent to end tests:
 
 `poetry run pytest tests/e2e`
@@ -109,7 +109,6 @@ Running ent to end tests:
 If you want to run all tests:
 
 `poetry run pytest`
-
 
 # TODO List
 
