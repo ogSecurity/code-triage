@@ -1,9 +1,19 @@
-import csv
+import os
 
 
-def read_csv_as_dict(filepath):
-    """Helper function to read a CSV file and return it as a list of dicts."""
-    with open(filepath, 'r', newline='') as file:
-        reader = csv.DictReader(file)
-        return list(reader)
+def folder_exits(folder: str) -> bool:
+    """Check if a folder exists
 
+    :param folder: Path to the folder to check
+    :return: True if the folder exists, False otherwise
+    """
+    return os.path.exists(folder)
+
+
+def folder_empty(folder: str) -> bool:
+    """Check if a folder is empty
+
+    :param folder: Path to the folder to check
+    :return: True if the folder is empty, False otherwise
+    """
+    return len(os.listdir(folder)) == 0

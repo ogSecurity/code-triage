@@ -12,6 +12,7 @@ import pygit2
 
 logging.basicConfig(level=logging.INFO)
 
+
 class Github(SCM):
     def __init__(self):
         super().__init__()
@@ -21,7 +22,7 @@ class Github(SCM):
     def authentication_options() -> list:
         return [{'access_token': ['access_token']}]
 
-    def authenticate(self):
+    def authenticate(self) -> None:
         if not self.auth_configuration:
             logging.error("No authentication configuration provided.")
             exit(1)
@@ -29,7 +30,7 @@ class Github(SCM):
         if 'access_token' in self.auth_configuration:
             self.client = gh(auth=Auth.Token(self.auth_configuration['access_token']))
 
-    def get_repos(self, user):
+    def get_repos(self, user) -> list:
         repos = self.client.get_user(user).get_repos()
         return_repos = []
 
@@ -44,6 +45,12 @@ class Github(SCM):
             for branch in tmp_branches:
                 branches.append(Branch(branch.name))
 
+            # TODO will need to support SSH clone URLs
+            if repo.clone_url.startswith("https://") and not repo.clone_url.endswith(".git"):
+               clone_url = f"{repo.clone_url}.git"
+            else:
+               clone_url = repo.clone_url
+
             return_repos.append(
                 Repository(repo.name,
                            repo.owner.login,
@@ -56,7 +63,7 @@ class Github(SCM):
                            repo.forks_count,
                            self.get_str_datetime(repo.updated_at),
                            repo.html_url,
-                           repo.clone_url,
+                           clone_url,
                            tag_count,
                            latest_tag,
                            tags,
@@ -66,7 +73,7 @@ class Github(SCM):
             count += 1
         return return_repos
 
-    def is_repo_empty(self, repo):
+    def is_repo_empty(self, repo) -> bool:
         try:
             # Check if the repository size is zero
             if repo.size == 0:
@@ -83,13 +90,13 @@ class Github(SCM):
             print(f"An error occurred: {e}")
             return False
 
-    def get_repo_tags(self, repo):
+    def get_repo_tags(self, repo) -> list:
         return repo.get_tags()
 
-    def get_repo_branches(self, repo):
+    def get_repo_branches(self, repo) -> list:
         return repo.get_branches()
 
-    def get_tags_info(self, repo):
+    def get_tags_info(self, repo) -> tuple:
         count = 0
         latest_tag = ""
         all_tags = []
@@ -104,14 +111,17 @@ class Github(SCM):
             return count, latest_tag, all_tags
         return count, latest_tag, all_tags
 
-    def get_triage_data(self):
+    def get_triage_data(self) -> list:
         repo_list = []
         for repo in self.client.get_user().get_repos():
             yield repo
 
         return repo_list
 
-    def pull_repo(self, owner, repo_name, clone_url, branch, destination_folder):
+    def pull_repo(self, owner: str, repo_name: str, clone_url: str, branch: str, destination_folder: str) -> bool:
+        credentials = pygit2.UserPass("x-access-token", password=self.auth_configuration['access_token'])
+        callbacks = pygit2.RemoteCallbacks(credentials=credentials)
+
         try:
             # Checkout all branches
             if branch == '*':
@@ -131,6 +141,9 @@ class Github(SCM):
                             logging.error(f"No branches found for {repo_name}, skipping")
                             continue
                     except GitError as e:
+                        if "unexpected http status code: 404" in str(e):
+                            logging.error(f"{repo_name} not found or is empty - skipping")
+                            return False
                         if "'HEAD' is not a valid branch name" in str(e):
                             continue
                         logging.error(f"An error occurred cloning {repo_name}: {e}")
@@ -138,7 +151,11 @@ class Github(SCM):
             else:
                 repo_path = os.path.join(destination_folder, repo_name)
                 try:
-                    pygit2.clone_repository(clone_url, repo_path, checkout_branch=branch)
+                    pygit2.clone_repository(clone_url, repo_path, checkout_branch=branch, callbacks=callbacks)
+                except GitError as e:
+                    if "unexpected http status code: 404" in str(e):
+                        logging.error(f"{repo_name} not found or is empty - skipping")
+                        return False
                 except KeyError as e:
                     if "reference 'refs/remotes/" in str(e) and "' not found" in str(e):
                         # No branches found - treat as a tag

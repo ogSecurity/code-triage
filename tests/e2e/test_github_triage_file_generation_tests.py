@@ -1,11 +1,8 @@
-from tests.conftest import read_csv_as_dict
-
-import csv
 import pytest
 import subprocess
 import os
 
-from utils.output import RowConfiguration, TriageFile
+from utils.output import RowConfiguration, TriageFile, Output
 
 
 @pytest.fixture(scope="class", autouse=True)
