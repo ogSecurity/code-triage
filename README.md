@@ -28,11 +28,11 @@ If you're using `Tokens (classic)` the only permission you'll need is `public_re
 
 Generating the triage spreadsheet for you to review:
 
-`docker run -ti --rm -v ${PWD}:/src codetriage -m triage -a YOUR_ACCESS_TOKEN_OR_LOCATION -u TARGET_ORG_OR_USER`
+`docker run -ti --rm -v ${PWD}:/src codetriage -m triage -a YOUR_ACCESS_TOKEN_OR_LOCATION -u TARGET_ORG_OR_USER -o /src/triage.csv`
 
 Pulling the repositories marked in the triage spreadsheet `triage.csv` into a `repos` folder (ensuring it's written into the mounted /src folder):
 
-`docker run -ti --rm -v ${PWD}:/src codetriage -m triage -a YOUR_ACCESS_TOKEN_OR_LOCATION -d /src/repos/ -t triage.csv`
+`docker run -ti --rm --user $(id -u):$(id -g) ${PWD}:/src codetriage -m triage -a YOUR_ACCESS_TOKEN_OR_LOCATION -d /src/repos/ -t /src/triage.csv`
 
 # Running Locally
 
